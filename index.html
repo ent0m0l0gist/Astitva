@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Immersion</title>
+	<meta name="theme-color" content="#000">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,800,900" rel="stylesheet">
+	<style type="text/css">
+		body,html{
+			background: #161616;
+		}
+		.panel{
+			position: fixed;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			background: #000;
+			color: #fff;
+			text-align: center;
+			padding: 10px;
+		}
+		.panel img
+		{
+			width: 50px;
+			margin: 0px 30px;
+		}
+		iframe{
+			position: fixed;
+			top: 0px;
+			left: 0%;
+			right: 0px;
+			bottom: 73px;
+			width: 100%;
+			height: 100%;
+			border: none;
+			transition: all 1s ease-in-out;
+		}
+		#explorer{
+			left: 100%;
+		}
+		#immerser{
+			left: 200%;
+		}
+		#planner{
+			left: 0%;
+		}
+	</style>
+	<script src="jquery.js"></script>
+	<script type="text/javascript">
+		function one(){
+			$("#planner").css("left","0%");
+			$("#explorer").css("left","100%");
+			$("#immerser").css("left","200%");
+		}
+		function two(){
+			$("#planner").css("left","-100%");
+			$("#explorer").css("left","0%");
+			$("#immerser").css("left","100%");
+		}
+		function three(){
+			$("#planner").css("left","-200%");
+			$("#explorer").css("left","-100%");
+			$("#immerser").css("left","0%");
+		}
+	</script>
+</head>
+<body>
+	<iframe id="planner" src="home/tsp.html"></iframe>
+	<iframe id="explorer" src="explorer.html"></iframe>
+	<iframe id="immerser" src="checker/jeromeetienne.github.io/AR.js/three.js/examples/mobile-performance.html"></iframe>
+	<div class="panel"><img onclick="one()" src="2.png"><img onclick="two()" src="1.png"><img onclick="three()" src="3.png"></div>
+</body>
+</html>

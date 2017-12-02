@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="theme-color" content="#000">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,800,900" rel="stylesheet">
+	<script src="../jquery.js"></script>
+	<script type="text/javascript">
+		function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+		  var R = 6371; // Radius of the earth in km
+		  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+		  var dLon = deg2rad(lon2-lon1); 
+		  var a = 
+		    Math.sin(dLat/2) * Math.sin(dLat/2) +
+		    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+		    Math.sin(dLon/2) * Math.sin(dLon/2)
+		    ; 
+		  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		  var d = R * c; // Distance in km
+		  d=d*100;
+		  d=Math.ceil(d);
+		  d=d/100;
+		  return d;
+
+		}
+
+		function deg2rad(deg) {
+		  return deg * (Math.PI/180)
+		}
+	</script>
+	<script src="res.js"></script>
+	<style type="text/css">
+		body,html{
+			font-family: "Heebo", sans-serif;
+			background: #101010;
+			color: #fff;
+			margin: 0px;
+		}
+		div{
+			position: relative;
+			margin-bottom: 0px;
+		}
+		h1{
+			margin: 0px 0px;
+			font-size: 40px;
+			line-height: 55px;
+			font-weight: 500;
+			position: absolute;
+			bottom: 20px;
+			left: 30px;
+			letter-spacing: 2px;
+		}
+		h1 b{
+			font-size: 70px;
+		}
+		h2{
+			margin: 10px 30px;
+			font-weight: 100;
+			margin-top: 40px;
+		}
+		span{
+			padding: 40px 30px;
+			display: block;
+			font-size: 23px;
+		}
+		span:nth-child(2n+1){
+			background: #222;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<img src="ud.jpg" width="100%">
+		<img src="backdrop.png" style="position: absolute;width: 100%;height: 100%;top: 0px;opacity: 0.6">
+		<h1>Welcome to <b>Udaipur!</b></h1>
+	</div>
+	<h2>The following are a few routines that you might want to follow!</h2>
+<script type="text/javascript">
+
+	  var distance_mat=[];
+	  var lats=[];
+	  var longs=[];
+	  var places=[];
+	  var visited=[];
+      var msg=JSON.parse(results);
+      var k = msg['results'].length - 1;
+      for (var i = msg['results'].length - 1; i >= 0; i--) {
+	        console.log(msg['results'][i]['name']+msg['results'][i]['geometry']['location']['lat']+msg['results'][i]['geometry']['location']['lng']);
+	        //lats[k-i]=msg['results'][i]["geometry"]['location'].lat;
+	        lats.push(msg['results'][i]["geometry"]['location'].lat);
+            longs.push(msg['results'][i]["geometry"]['location'].lng);
+            places.push(msg['results'][i]["name"]);
+        }
+      //alert("hi");
+
+      for(var i = 0; i < places.length; i++)
+      {
+      	curr_dists=[];
+      	for(var j = 0; j<places.length;j++ )
+      	{
+      		curr_dists.push(getDistanceFromLatLonInKm(lats[i],longs[i],lats[j],longs[j]));
+      	}
+      	visited[i]=false;
+      	distance_mat.push(curr_dists);
+      	
+      }
+
+
+      var today_time = 0;
+      var today_indexes = [];
+      var today_names =[];
+      var routine = [];
+      var routine_names=[];
+      checker=true;
+      var i =0;
+      while(checker=true)
+      {
+      	checker=false;
+      	//alert(i);
+
+
+      	today_indexes.push(i);
+      	today_names.push(places[i]);
+      	for(var k=0; k<places.length;k++)
+      	{
+      		distance_mat[k][i]=9999;
+      	}
+      	for(var k=0; k<places.length;k++)
+      	{
+      		if(distance_mat[i][k]!=9999){
+      			checker=true;
+      			break;
+      		}
+      	}
+
+      	temp = 0;
+      	for(var j=0;j<places.length;j++)
+      	{
+      		if(distance_mat[i][j]<distance_mat[i][temp])
+      			temp=j;
+      	}
+
+      	if(today_time>15||today_indexes.length>6)
+     	{
+     		if(today_indexes.length>1){
+     		routine.push(today_indexes);
+     		routine_names.push(today_names);
+     		today_names=[];
+     		console.log(today_time);
+     		today_indexes=[];
+     		today_time=0;}
+     	}
+
+     	today_time+=distance_mat[i][temp];
+      	i = temp;       	
+
+      	if(i==0)
+      	break;  
+
+    }
+    for (var i = 0; i < routine_names.length; i++) {
+    	var str="<span>";
+    	for (var j = 0; j < routine_names[i].length; j++) {
+	    	str=str+routine_names[i][j]+"<br>";
+	    }
+	    str=str+"</span>";
+	    $("body").append(str);
+    }
+    $("body").append("<br><br><br>")
+
+    //document.getElementById("place").innerHTML=distance_mat[3][3];	
+    
+
+
+
+</script>	
+
+
+</body>
+</html>

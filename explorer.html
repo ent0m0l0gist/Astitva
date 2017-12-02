@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="theme-color" content="#000">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,800,900" rel="stylesheet">
+	<script src="jquery.js"></script>
+	<script type="text/javascript">
+		function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+		  var R = 6371; // Radius of the earth in km
+		  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+		  var dLon = deg2rad(lon2-lon1); 
+		  var a = 
+		    Math.sin(dLat/2) * Math.sin(dLat/2) +
+		    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+		    Math.sin(dLon/2) * Math.sin(dLon/2)
+		    ; 
+		  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		  var d = R * c; // Distance in km
+		  d=d*100;
+		  d=Math.ceil(d);
+		  d=d/100;
+		  return d;
+		}
+
+		function deg2rad(deg) {
+		  return deg * (Math.PI/180)
+		}
+		//AIzaSyCLs4XgeS3ehtEe_U58K5V88qjdR9b77Q4
+		var lattitude=24.597655;
+		var longitude=73.73813609999999;
+		window.addEventListener("deviceorientation", orientation, false);
+		function orientation(event){
+		  $("#f1").innerHTML="Magnetometer: "+ Math.ceil(event.alpha) + ", "+ Math.ceil(event.beta) + ", "+ Math.ceil(event.gamma);
+		  var x=Math.ceil(event.alpha);
+		  //x=x%360;
+		  x=x/10;
+		  x=Math.ceil(x);
+		  x=x*10;
+		  $("h1").html(x);
+		  if(x>270){
+		  	$("#f1").css("left","0%");
+		  }
+		  else{
+		  	$("#f1").css("left","100%");
+		  }
+		  $("#ehandler").css("left","-"+(4*(100-(x*100/360)))+"%");
+		}
+	</script>
+	<script src="res.js"></script>
+	<style type="text/css">
+		body,html{
+			font-family: "Heebo", sans-serif;
+			background: #101010;
+			color: #fff;
+		}
+		#explorespace{
+			position: fixed;
+			top: 0px;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+		}
+		#explorespace div#ehandler{
+			width: 400%;
+			height: 100%;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+		#ehandler div{
+			width: 25%;
+			display: inline-block;
+			height: 100%;
+			vertical-align: top;
+			overflow-y: scroll;
+		}
+		#f1{
+			position: relative;
+		}
+		span{
+			display: block;
+			background: #151515;
+			width: 80%;
+			text-align: left;
+			padding:20px 30px;
+			box-sizing: border-box;
+			margin: 20px auto;
+			border-radius: 5px;
+			box-shadow: 5px 0px 5px rgba(0,0,0,0.3)
+		}
+		span h2{
+			margin: 0px;
+			text-transform: uppercase;
+			font-size: 30px;
+		}
+		span i{
+			font-family: serif;
+			font-size: 12px;
+		}
+		span a{
+			text-decoration: none;
+			color: #187dec;
+			font-weight: bold;
+			margin-right: 10px;
+		}
+	</style>
+	<script type="text/javascript">
+      var list=[[],[],[],[]];
+      var map;
+      var lat=24.597655;
+      var lng=73.73813609999999;
+      var infowindow;
+      function initMap() {
+        var pyrmont = {lat: 24.597655, lng: 73.73813609999999};
+        //var service = new google.maps.places.PlacesService($('#ehandler'));
+        /*service.nearbySearch({
+          location: pyrmont,
+          radius: 1500,
+          type: ['point_of_interest']
+        }, callback);*/
+      }
+
+      function callback(results, status) {
+        /*if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            $("#map").append(results[i].name);
+            var x=results[i]["geometry"]['location'].lat-lat;
+            var y=results[i]["geometry"]['location'].lng-lng;
+            if(x>0){
+              if(y>0){
+                $("#f1").append(results[i].name);
+              }
+              else{
+                $("#f2").append(results[i].name);
+              }
+            }
+            if(x<0){
+              if(y<0){
+              	$("#f3").append(results[i].name);
+              }
+              else{
+                $("#f4").append(results[i].name);
+              }
+            }
+          }
+        }*/
+      }
+    </script>
+</head>
+<body>
+<div id="map"></div>
+<div id="explorespace">
+	<div id="ehandler">
+		<div id="f1"></div><div id="f2"></div><div id="f3"></div><div id="f4"></div>
+	</div>
+</div>
+
+<h1 style="position: fixed; top:-100px;left:-100px;color:red;"></h1>
+<scriptt src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLs4XgeS3ehtEe_U58K5V88qjdR9b77Q4&libraries=places&callback=initMap" async defer></scriptt>
+<script type="text/javascript">
+	
+      var msg=JSON.parse(results);
+      for (var i = msg['results'].length - 1; i >= 0; i--) {
+	      console.log(msg['results'][i]['name']+msg['results'][i]['geometry']['location']['lat']+msg['results'][i]['geometry']['location']['lng']);
+	      var x=msg['results'][i]["geometry"]['location'].lat-lat;
+            var y=msg['results'][i]["geometry"]['location'].lng-lng;
+            var str="<span><h2>"+msg['results'][i]["name"]+"</h2><i>";
+            for (var l = msg['results'][i]['types'].length - 1; l >= 1; l--) {
+            	str=str+msg['results'][i]['types'][l]+", ";
+            }
+            str=str+msg['results'][i]['types'][0];
+            str=str+"</i><br>";
+            str=str+"<a href='http://maps.google.com/maps?ll="+msg['results'][i]["geometry"]['location'].lat+","+msg['results'][i]["geometry"]['location'].lng+"'>Navigate here</a>"
+            str=str+"<b>"+getDistanceFromLatLonInKm(lat,lng,msg['results'][i]['geometry']['location']['lat'],msg['results'][i]['geometry']['location']['lng'])+"km</b>";
+            str=str+"<br><br>Near "+msg['results'][i]['vicinity']+" ";
+            if(msg['results'][i]['rating']){
+            	str=str+"and <b>rated "+msg['results'][i]['rating']+"/5</b>";
+            }
+            str=str+"</span>";
+            if(x>0){
+              if(y>0){
+                $("#f1").append(str);
+              }
+              else{
+                $("#f2").append(str);
+              }
+            }
+            if(x<0){
+              if(y<0){
+              	$("#f3").append(str);
+              }
+              else{
+                $("#f4").append(str);
+              }
+             }
+	    }
+</script>		
+</body>
+</html>
